@@ -5,16 +5,23 @@
 
 <mapper namespace="login">
 
-<insert id="loginCreate" parameterType="LoginVO">
-insert into
-tbl_user(id,usernm,nickname,gender,birthday,loginconf) values
- (#{id},#{usernm},#{nickname},#{gender},#{birthday},#{loginconf})
-</insert>
+	<insert id="loginCreate" parameterType="LoginVO">
+		insert into
+		tbl_user(id,usernm,gender,birthday,loginconf) values
+		(#{id},#{usernm},#{gender},#{birthday},#{loginconf})
+	</insert>
 
 
-<select id="checkId" resultType="java.lang.Integer">
-  select count(*) from tbl_user where id = #{id} and loginconf = #{loginconf}
-</select>
+	<select id="checkId" resultType="java.lang.Integer">
+		select count(*) from tbl_user where id = #{id} and loginconf = #{loginconf}
+	</select>
+
+
+
+	<select id="login" resultType="LoginVO">
+		select * from tbl_user
+		where id = #{id} and loginconf = #{loginconf}
+	</select>
 
 
 </mapper> 

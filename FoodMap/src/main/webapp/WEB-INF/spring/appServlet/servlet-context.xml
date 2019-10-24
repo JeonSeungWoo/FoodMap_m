@@ -15,6 +15,22 @@
 	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
 	<resources mapping="/resources/**" location="/resources/" />
 
+<!-- 인터셉터 객체 생성 -->
+    <beans:bean id="authenticationInterceptor" class="org.woo.web.login.interceptor.AuthenticationInterceptor">
+    </beans:bean>
+    <!-- Interceptor 설정 -->
+    
+    <interceptors>
+        <interceptor>
+             <mapping path="/board/register"/>
+            <mapping path="/board/modify"/>
+            <mapping path="/board/delete"/> 
+            <beans:ref bean="authenticationInterceptor"/>
+        </interceptor>
+    </interceptors>
+
+
+
 	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
 	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<beans:property name="prefix" value="/WEB-INF/views/" />

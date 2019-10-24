@@ -1,15 +1,21 @@
 package org.woo.web.login.controller;
 
-import java.io.PrintWriter;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.woo.web.login.domain.LoginVO;
 import org.woo.web.login.service.LoginService;
 
@@ -20,46 +26,52 @@ public class LoginController {
 	@Inject
 	private LoginService service;
 
-	@RequestMapping(value = "/loginCreate", method = RequestMethod.POST)
+	@RequestMapping(value = "/loginSuccess", method = RequestMethod.GET)
 	public String loginCreate(Model model, LoginVO vo) throws Exception {
-		
-		//처음 등록 할 경우 insert후 nickName 설정.
-		service.loginCreate(vo);
-		
-		return "redirect:/user/login";
+
+		return "login/loginSuccess";
 
 	}
-	
-	@RequestMapping(value = "/checkId", method = RequestMethod.POST)
-	public void checkId(HttpServletRequest req, HttpServletResponse res, Model model) throws Exception {
-		System.out.println("req : " + req);
-		System.out.println("res : " + res);
-		/*
-		 * PrintWriter out = res.getWriter(); try { String parmid =
-		 * (req.getParameter("id")== null)? "" : String.valueOf(req.getParameter("id"));
-		 * LoginVO vo = new LoginVO(); vo.setId(parmid.trim()); Integer checkPoint =
-		 * service.checkId(vo); out.print(checkPoint); out.flush(); out.close(); } catch
-		 * (Exception e) { e.printStackTrace(); out.print("1"); }
-		 */
-		
-		
-		
-		}
-	
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	@ResponseBody
+	@RequestMapping(value = "/login", method = RequestMethod.POST)
+	public void checkId(HttpSession session, HttpServletRequest req, HttpServletResponse res, Model model,
+			@RequestBody LoginVO vo) throws Exception {
+		System.out.println(vo);
+
+		System.out.println(service.checkId(vo));
+
+		int checkId = service.checkId(vo);
+
+		if (checkId == 0) {
+			// 회원 가입 후 로그인.
+			service.loginCreate(vo);
+
+			service.login(vo);
+			session.setAttribute("login", vo); // 세션에 login인이란 이름으로 UserVO 객체를 저장해 놈.
+
+		} else {
+			// 로그인 성공.
+			service.login(vo);
+			session.setAttribute("login", vo); // 세션에 login인이란 이름으로 UserVO 객체를 저장해 놈.
+		}
+
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/kakaLogout", method = RequestMethod.POST)
+	public void kakaLogout(HttpSession session, HttpServletRequest req, HttpServletResponse res, Model model)
+			throws Exception {
+            
+		
+	}
+
+	@RequestMapping(value = "/logout")
+	public String logout(HttpSession session) {
+		session.invalidate(); // 세션 전체를 날려버림
+		// http://developers.kakao.com/logout
+		return "redirect:/";
+
+	}
+
 }

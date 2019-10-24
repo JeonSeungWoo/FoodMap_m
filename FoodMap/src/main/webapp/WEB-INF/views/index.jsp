@@ -1,5 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c"   uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn"  uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="ko">
 
@@ -24,6 +27,7 @@
 </head>
 
 <body>
+
     <!-- header start ------------------------------------------------------------------>
     <nav class="navbar navbar-default navbar-fixed-top">
         <div class="container-fluid">
@@ -41,15 +45,23 @@
                     <li><a href="#web">알림</a></li>
                     <li><a href="#class">내 활동</a></li>
                     <li><a href="#resource">찜목록</a></li>
-                    <li><a href="#contact" data-toggle="modal" data-target="#loginModal">로그인</a></li>
-                   <!--  <a href="http://developers.kakao.com/logout">로그 아웃</a> -->
                     
+                   <c:if test="${empty login.id}">
+                    <li><a href="#contact" data-toggle="modal" data-target="#loginModal">로그인</a></li>
+                   
+                   </c:if>
+                     <c:if test="${!empty login.id}">
+                    <li> <a href="/login/logout" onclick="logout()">로그 아웃</a> </li>
+                   
+                   </c:if>
+               
 
                 </ul>
             </div>
         </div>
     </nav>
     <!-- header end -->
+    <form id="form">
     <div id="container">
     
     <!--  HeadMenu ----------------------------------------------------->
@@ -61,6 +73,7 @@
              <div class="form-group has-feedback has-search">
                <span class="glyphicon glyphicon-search form-control-feedback"></span>
                <input type="text" class="form-control" placeholder="Search">
+               <button type="button" class="btn btn-primary">검색</button>
              </div>
              </div>
          </div>
@@ -110,6 +123,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
+                   <div id="newTilte">
                     <div id="loginTitle">
                             <h4 >로그인</h4>
                     </div>
@@ -118,7 +132,7 @@
                      <a id="kakao-login-btn"></a>
                      
                      </div>
-                  
+                  </div>
 
 
                 </div>
@@ -129,6 +143,8 @@
         </div>
     </div>
     <!-- The Modal END-->
+</form>
+
 
     <!-- Footer ---------------------------------------------------->
     <footer class="text-center">
@@ -139,13 +155,16 @@
     </footer>
 
 
+
     <!--js ---------------------------------------------------------------------------->
 
     <script type='text/javascript'>
-
+ 
+    var form = $("#form");
     // 사용할 앱의 JavaScript 키를 설정해 주세요.
     Kakao.init('56cc765b1e454d414955fbff315efb51');
-
+    
+    // 카카오 로그인 Start------------------------------------------------------------------------
     var res = "";
         // 카카오 로그인 버튼을 생성합니다.
         Kakao.Auth.createLoginButton({
@@ -159,7 +178,7 @@
              /*    Kakao.Auth.setAccessToken(); */
               //아이디 체크
                 ckeckId(res);
-                
+              
               },
               fail: function(error) {
                 alert(JSON.stringify(error));
@@ -172,23 +191,43 @@
         });
         
         
-        function ckeckId(res){
-        	alert(JSON.stringify(res));
-        	$.ajax({
-                url:"/login/checkId",
-                type:'POST',
-                data: res,
+        function ckeckId(res){	
+            var kakaoData = {
+                  id:  res.id,
+                  usernm: res.properties.nickname,
+                  gender: res.kakao_account.gender,
+                  birthday: res.kakao_account.birthday,
+                  loginconf: "kakao"	
+            }
+        	 $.ajax({
+                url:"/login/login",
+                method:"POST",
+                type:'json',
+                contentType : "application/json; charset=UTF-8",
+                data: JSON.stringify(kakaoData),
                 success:function(data){
-                    alert("완료!");
-                   
+                	 form.attr("action","/login/loginSuccess").attr("method","get").submit();
                 },
                 error:function(error){
                 	alert("실패");
                 }
-            });
+            }); 
+            
+            
         }
         
-     
+        function logout(){
+        	
+        	
+        	Kakao.Auth.logout();
+        	alert("로그 아웃");
+        	/* form.attr("action","/login/logout").attr("method","get").submit(); */
+              
+        }
+        
+       
+        
+        // 카카오 로그인 End------------------------------------------------------------------------
        /*  Kakao.Auth.logout(); */
     
     

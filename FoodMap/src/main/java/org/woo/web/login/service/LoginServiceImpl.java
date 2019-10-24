@@ -24,4 +24,10 @@ public class LoginServiceImpl implements LoginService {
 		return dao.checkId(vo);
 	}
 
+	@Override
+	public LoginVO login(LoginVO vo) throws Exception {
+		// TODO Auto-generated method stub
+		return dao.login(vo);
+	}
+
 }

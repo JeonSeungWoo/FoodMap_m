@@ -21,6 +21,12 @@ public class LoginDAOImpl implements LoginDAO {
 		// TODO Auto-generated method stub
 		return session.selectOne("login.checkId",vo);
 	}
+
+	@Override
+	public LoginVO login(LoginVO vo) throws Exception {
+		// TODO Auto-generated method stub
+		return session.selectOne("login.login",vo);
+	}
 	
 
 }
