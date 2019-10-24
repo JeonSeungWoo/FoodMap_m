@@ -38,6 +38,7 @@ public class DBTest {
 	
 	@Test
 	public void DBConnectionTest() throws Exception {
+		
     //mysql driver name 5version
 	//com.mysql.jdbc.Driver
 	//8버전 부터 driver name이 변경 되었고 Timezone을 설정하도록 변경 되었다. (&amp;   ==   &  랑 같고 xml에서는 &을 읽지 못한다.)
