@@ -11,20 +11,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-    
-    
-    <!--css -->
+</head>
+
+ <!--css -->
     <link rel="stylesheet" href="/resources/css/woo.css">
-    
-    
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    
     <!--카카오 로그인  -->
-     <script src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
-</head>
+    <script src="https://developers.kakao.com/sdk/js/kakao.min.js"></script>
 
 <body>
 
@@ -42,15 +38,16 @@
             <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="#myPage">HOME</a></li>
-                    <li><a href="#web">알림</a></li>
-                    <li><a href="#class">내 활동</a></li>
-                    <li><a href="#resource">찜목록</a></li>
-                    
+                   <!--로그인 before  ----------------------------------------------------------------> 
                    <c:if test="${empty login.id}">
                     <li><a href="#contact" data-toggle="modal" data-target="#loginModal">로그인</a></li>
                    
                    </c:if>
-                     <c:if test="${!empty login.id}">
+                   <!--르그인 after  ------------------------------------------------------------------->
+                   <c:if test="${!empty login.id}">
+                    <li><a href="#web">알림</a></li>
+                    <li><a href="#class">내 활동</a></li>
+                    <li><a href="#resource">찜목록</a></li>
                     <li> <a href="/login/logout" onclick="logout()">로그 아웃</a> </li>
                    
                    </c:if>
@@ -65,7 +62,7 @@
     <div id="container">
     
     <!--  HeadMenu ----------------------------------------------------->
-        <div class="jumbotron">
+        <div class="jumbotron jumbo-he-2">
             <h2><span style="color: #1564f9;">현재 동네</span>의 맛집은 어디 일까요?</h2>
             <p> 현재 위치 하신 곳을 입력해 주세요~</p>
               <!-- Actual search box -->
@@ -78,12 +75,39 @@
              </div>
          </div>
          
+      <!--로그인 후 맛집 등록  ------------------------------------------------------------->
+      <c:if test="${!empty login.id}">
+          <div class="info">
+          <div id="infoDetail">
+               <div class="jumbotron jumbo-he-3">
+               
+               <h3>맛집을 등록 해보세요. <a href="/main/insertPage" >등록하러 가기</a></h3>
+               
+              </div>
+              
+              <h4 style="font-weight: bold;">※ 등록 현황 </h4>
+         </div>
+              
+              <!--이미지 스타트  -->
+              <div class="infoBox">
+                   <div class="infoImg"></div>
+                   <div class="infoContentDetail"><h3>detail</h3></div>
+                   <div class="infoContent"><h4 style="margin-top: 18px;">content</h4></div>
+              </div>
+              
+         </div>
+      </c:if>
+         
+         
       <!-- many info -------------------------------------------------------->  
-         <div id="manyInfo">
-              <div id="manyInfoDetail">
+       <div class="info">
+          <div id="infoDetail">
+               <div class="jumbotron">
                <h3>인기 맛집 찾기</h3>
                <h4>오늘 약속 장소는 어디에?</h4>
               </div>
+         </div>
+              
               <!--이미지 스타트  -->
               <div class="infoBox">
                    <div class="infoImg"></div>
@@ -148,9 +172,6 @@
 
     <!-- Footer ---------------------------------------------------->
     <footer class="text-center">
-        <a class="up-arrow" href="#myPage" data-toggle="tooltip" title="TO TOP">
-            <span class="glyphicon glyphicon-chevron-up"></span>
-        </a><br><br>
         <p>© Apptizen. All rights reserved.</p>
     </footer>
 
@@ -216,52 +237,36 @@
             
         }
         
-        function logout(){
+/*         function logout(){
         	
         	
         	Kakao.Auth.logout();
         	alert("로그 아웃");
-        	/* form.attr("action","/login/logout").attr("method","get").submit(); */
+        	form.attr("action","/login/logout").attr("method","get").submit();
               
-        }
+        } */
         
        
-        
+      //로그아웃 시작
+		function logout(){
+			$.ajax({
+				dataType:'jsonp',
+				jsonpCallback: "callback",
+				url: "http://developers.kakao.com/logout",
+				success :function(data){
+					alert("성공?");
+					form.attr("action","/login/logout").attr("method","get").submit();
+				}
+				
+			});
+				
+			
+		}
+		//로그아웃 끝
+
         // 카카오 로그인 End------------------------------------------------------------------------
        /*  Kakao.Auth.logout(); */
     
-    
-        $(document).ready(function () {
-
-            // Initialize Tooltip
-            $('[data-toggle="tooltip"]').tooltip();
-
-            // Add smooth scrolling to all links in navbar + footer link
-            $("footer a[href='#myPage']").on('click', function (event) {
-
-                // Make sure this.hash has a value before overriding default behavior
-                if (this.hash !== "") {
-
-                    // Prevent default anchor click behavior
-                    event.preventDefault();
-
-                    // Store hash
-                    var hash = this.hash;
-
-                    // Using jQuery's animate() method to add smooth page scroll
-                    // The optional number (900) specifies the number of milliseconds it takes to scroll to the specified area
-                    $('html, body').animate({
-                        scrollTop: $(hash).offset().top
-                    }, 900, function () {
-
-                        // Add hash (#) to URL when done scrolling (default click behavior)
-                        window.location.hash = hash;
-                    });
-                } // End if
-            });
-
-        })
-
     </script>
 </body>
 

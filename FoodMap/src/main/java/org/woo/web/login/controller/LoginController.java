@@ -1,10 +1,5 @@
 package org.woo.web.login.controller;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -58,18 +53,11 @@ public class LoginController {
 
 	}
 
-	@ResponseBody
-	@RequestMapping(value = "/kakaLogout", method = RequestMethod.POST)
-	public void kakaLogout(HttpSession session, HttpServletRequest req, HttpServletResponse res, Model model)
-			throws Exception {
-            
-		
-	}
-
 	@RequestMapping(value = "/logout")
 	public String logout(HttpSession session) {
 		session.invalidate(); // 세션 전체를 날려버림
 		// http://developers.kakao.com/logout
+		
 		return "redirect:/";
 
 	}

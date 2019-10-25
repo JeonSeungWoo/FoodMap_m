@@ -1,3 +1,10 @@
+*{
+	padding: 0;
+	margin: 0;
+}
+
+
+
 
     #loginTitle{
         text-align: center;
@@ -8,8 +15,12 @@
        text-align: center;
     }
     
-    .jumbotron{
+    .jumbo-he-2{
        height: 490px;
+    }
+    
+    .jumbo-he-3{
+        height: 160px;
     }
     
     /*search  */
@@ -39,13 +50,14 @@ margin-top: 144px;
   
     
 /*---------------------------------  */    
-#manyInfo{
+.info{
 border-top: 1px solid black; 
 margin: 44px;
 padding: 28px;
+clear: both;
 }
 
-#manyInfoDetail{
+.infoDetail{
 margin: 28px;
 }
 
